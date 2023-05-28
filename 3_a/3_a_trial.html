@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.4/d3.min.js" integrity="sha512-nfUlp2ZWPKWlnAH/OsMeAqRSYBxOdPYeBXwceyw6QqqZ7uTT/s5/eS1hMKphjVBouk0jf/JQ8ULVJRnEqSHkXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    let svg = d3.select("body").append("svg")
+svg
+  .attr("width", 800)
+  .attr("height", 800)
+let theData = [{
+    name: "John",
+    data: 123
+  },
+  {
+    name: "Alice",
+    data: 256
+  },
+  {
+    name: "Mike",
+    data: 189
+  },
+  {
+    name: "Emily",
+    data: 51
+  },
+  {
+    name: "David",
+    data: 134
+  },
+  {
+    name: "Sallie",
+    data: 113
+  },
+  {
+    name: "AnotherMike",
+    data: 189
+  },
+]
+
+const barWidth = 30
+
+let maxHeight = Math.max(...theData.map(obj => obj.data));
+let minHeight = Math.min(...theData.map(obj=>obj.data))
+let maxWidth = theData.length * barWidth * 2
+
+let initialX = (800 - maxWidth) / 2
+let initialY = (800 - maxHeight) / 2 + maxHeight
+
+
+
+let selection = svg.selectAll("g.data").data(theData)
+
+let enterSelection = selection.enter().append("g")
+  .attr("class", "trend")
+
+enterSelection.append("rect")
+  .attr("class", "value")
+  .attr("x", function(d, i) {
+    return (initialX + i * barWidth * 2)
+  })
+  .attr("y", function(d, i) {
+    return (initialY - d.data)
+  })
+  .attr("width", barWidth)
+  .attr("height", function(d) {
+    return d.data
+  })
+  .style("fill", "steelblue")
+
+
+
+let xScale = d3.scaleBand()
+    .domain([...theData.map(obj => obj.name)])
+    .range([0, maxWidth+barWidth])
+    .paddingInner(0.5)
+    .paddingOuter(0.5)
+    .align(0.5)
+let xAxisGenerator = d3.axisBottom(xScale)
+    .ticks(10)
+
+let xAxis =  svg.append("g")
+.attr("transform", `translate(${initialX-barWidth}, ${initialY + 0})`)
+    .call(xAxisGenerator)
+    
+let yScale = d3.scaleLinear()
+  .domain([maxHeight+30,0])
+  .range([0, maxHeight+30])
+
+let yAxis = svg.append("g")
+.attr("transform", `translate(${initialX-barWidth}, ${initialY-maxHeight-30})`)
+.call(d3.axisLeft(yScale))
+
+</script>
+</html>
